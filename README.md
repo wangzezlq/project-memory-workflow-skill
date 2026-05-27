@@ -1,13 +1,13 @@
 # Project Memory Workflow
 
-A portable project-memory workflow for managing long-running software projects across agents, platforms, and machines.
+A portable project-memory workflow for managing long-running software projects across AI agents, terminals, platforms, and machines.
 
-This repository contains:
+This repository is **not tied to one agent runtime**. It provides one shared methodology plus optional adapters for different systems:
 
-1. **A universal Markdown methodology** for project recovery, status tracking, and stop-work notes.
-2. **A Codex-native skill** in `project-memory-workflow/`.
-3. **Cross-agent adapters** for Claude Code, Codex, OpenClaw, Antigravity, and generic `AGENTS.md`-style systems.
-4. **Reusable templates** for global project indexes, project context files, task ledgers, and prompts.
+1. **Universal Markdown methodology** for project recovery, status tracking, and stop-work notes.
+2. **Agent-neutral templates** for project indexes, context files, task ledgers, and prompts.
+3. **Optional adapters** for Codex, Claude Code, OpenClaw, Antigravity, and generic `AGENTS.md`-style systems.
+4. **Prompt-only workflows** for tools that do not support installable skills or adapters.
 
 The workflow supports English and Chinese natural-language usage, including:
 
@@ -21,7 +21,7 @@ The workflow supports English and Chinese natural-language usage, including:
 
 Long-running projects often span multiple sessions, machines, and AI agents. Without durable project memory, agents waste time rediscovering context or, worse, continue from stale assumptions.
 
-This workflow makes the project state explicit by combining:
+This workflow makes project state explicit by combining:
 
 - a global `PROJECTS.md` dashboard;
 - per-project context files;
@@ -39,12 +39,12 @@ This workflow makes the project state explicit by combining:
 │   ├── PROJECTS.md
 │   ├── PROJECT_CONTEXT.md
 │   └── TASKS.md
-├── project-memory-workflow/                # Codex/OpenAI native skill
+├── project-memory-workflow/                # optional Codex-compatible skill package
 │   ├── SKILL.md
-│   ├── agents/openai.yaml
+│   ├── agents/openai.yaml                  # Codex/OpenAI adapter metadata
 │   ├── references/handbook.md
 │   └── assets/templates/
-└── adapters/
+└── adapters/                               # optional adapters for other runtimes
     ├── codex/
     ├── claude-code/
     ├── generic-agent/
@@ -72,9 +72,38 @@ git diff --stat
 
 If uncommitted changes exist, inspect key diffs before making assumptions.
 
-## Install: Codex
+## Quick start: agent-neutral setup
 
-Codex can use the native skill folder directly:
+Use this when you want a workflow that any agent can read.
+
+```bash
+cp templates/PROJECT_CONTEXT.md /path/to/project/PROJECT_CONTEXT.md
+mkdir -p /path/to/project/.project
+cp templates/TASKS.md /path/to/project/.project/TASKS.md
+```
+
+Optionally maintain a global dashboard:
+
+```bash
+mkdir -p ~/Projects
+cp templates/PROJECTS.md ~/Projects/PROJECTS.md
+```
+
+Then ask any agent:
+
+```text
+Recover this project using PROJECT_CONTEXT.md and .project/TASKS.md. Check git status/log/diff before editing code.
+```
+
+Or in Chinese:
+
+```text
+恢复一下这个项目，读取 PROJECT_CONTEXT.md 和 .project/TASKS.md，先检查 git status/log/diff，不要先改代码。
+```
+
+## Adapter: Codex
+
+Codex can optionally use the packaged skill folder directly:
 
 ```bash
 mkdir -p ~/.codex/skills
@@ -89,7 +118,9 @@ Example:
 Use $project-memory-workflow to recover this project context. Do not edit code until I confirm.
 ```
 
-## Install: Claude Code
+See `adapters/codex/install.md` for details.
+
+## Adapter: Claude Code
 
 Claude Code commonly reads project-local `CLAUDE.md`.
 
@@ -103,7 +134,7 @@ cp -R templates /path/to/project/.project-memory-templates
 
 If the project already has `CLAUDE.md`, merge the adapter section instead of overwriting it.
 
-## Install: generic AGENTS.md systems
+## Adapter: generic AGENTS.md systems
 
 For agents that read `AGENTS.md`:
 
@@ -115,7 +146,7 @@ cp -R templates /path/to/project/.project-memory-templates
 
 If `AGENTS.md` already exists, merge the adapter into it.
 
-## Install: OpenClaw
+## Adapter: OpenClaw
 
 ```bash
 cp adapters/openclaw/OPENCLAW.md /path/to/project/OPENCLAW.md
@@ -125,7 +156,7 @@ cp -R templates /path/to/project/.project-memory-templates
 
 If your OpenClaw environment uses a different project-instruction filename, copy the adapter content into that file.
 
-## Install: Antigravity
+## Adapter: Antigravity
 
 ```bash
 cp adapters/antigravity/AGENTS.md /path/to/project/AGENTS.md
@@ -137,7 +168,7 @@ If Antigravity uses a different instruction file, copy the adapter content there
 
 ## Prompt-only usage
 
-If an agent has no installable skill system, paste one of the prompts from `adapters/prompt-pack/`:
+If an agent has no installable skill or adapter mechanism, paste one of the prompts from `adapters/prompt-pack/`:
 
 - `universal-bootstrap-prompt.md`
 - `universal-recovery-prompt.md`
