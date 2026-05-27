@@ -1,0 +1,6 @@
+interface:
+  display_name: "Project Memory Workflow"
+  short_description: "Manage durable project memory"
+  default_prompt: "Use $project-memory-workflow to 恢复/初始化/收工 this project with durable Markdown memory."
+policy:
+  allow_implicit_invocation: true
